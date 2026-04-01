@@ -7,6 +7,7 @@ General rules:
 - Use Product Agent to create PRDs in Notion.
 - Use Design Agent to create design output in Figma.
 - Use Tech Lead Agent to create technical documentation in Notion.
+- Use Engineer Agent to consume approved Notion engineering tickets and implement code.
 - Ask for approval before moving to the next stage.
 - Pass artifacts (URLs, IDs, summaries), not whole chat history.
 
@@ -14,7 +15,8 @@ Workflow:
 1. Product Agent creates or updates the PRD in Notion.
 2. Design Agent reads the approved PRD and creates design output in Figma.
 3. Tech Lead Agent reads the PRD and design output, then writes a tech spec in Notion.
-4. Planner or Dev Agent can later break work into tasks and implement.
+4. Planner or Tech Lead Agent breaks work into engineering tickets in Notion.
+5. Engineer Agent consumes `Ready` tickets and moves them through `In Progress` -> `Review` -> `Done`.
 
 Artifact handoff format:
 - type
