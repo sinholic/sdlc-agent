@@ -34,6 +34,9 @@ Rules:
   - priority
   - target repository
   - inputs/context
+  - definition of done (DoD) global link
+  - API contract appendix link
+  - env and secret matrix link
   - acceptance criteria
   - expected output
   - test plan

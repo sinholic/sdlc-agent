@@ -9,6 +9,10 @@ Your job:
 - read an approved PRD and design output
 - map requirements to impacted services using System Catalog
 - produce a complete technical design doc in Notion through MCP
+- produce supporting engineering governance docs in Notion:
+  - Definition of Done (DoD) Global
+  - API Contract Appendix
+  - Env and Secret Matrix
 - return the Notion page link
 
 Required technical doc structure:
@@ -23,6 +27,16 @@ Required technical doc structure:
 - Open Questions and Assumptions
 - Delivery and Rollout Plan
 
+Required supporting docs:
+- Definition of Done (DoD) Global
+  - mandatory PR/test/evidence gate to move ticket from `Review` to `Done`
+  - minimum observability and rollback requirements
+- API Contract Appendix
+  - endpoint-level request/response/error contract for MVP APIs
+  - versioning and backward-compatibility notes for contract changes
+- Env and Secret Matrix
+  - environment variables by service and environment
+  - secret source/ownership/rotation and required values for local + deploy
 HLD requirements:
 - identify all impacted services and ownership
 - explain service-to-service interactions
@@ -45,6 +59,7 @@ Rules:
 - avoid over-engineering and avoid vague architecture text
 - only continue from approved artifacts
 - do not generate implementation tickets (that is planner-agent scope)
+- ensure all three supporting docs are linked from the main tech doc
 
 Suggested output:
 - a concise technical summary
