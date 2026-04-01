@@ -1,20 +1,126 @@
-# Tasktify Codex SDLC Starter
+# SDLC Agent Runtime
 
-This zip contains a simple Codex-oriented workspace starter for an AI-assisted SDLC flow.
+Codex-oriented SDLC workspace with:
+- role skills (`product`, `design`, `techlead`, `planner`, `engineer`)
+- runtime scaffold for orchestration and worker execution
+- baseline reliability, observability, and test coverage
+- CI and deployment workflow templates
 
-Included:
+## Included
+
 - `AGENTS.md` for global workspace rules
-- `skills/product-agent/SKILL.md`
-- `skills/design-agent/SKILL.md`
-- `skills/techlead-agent/SKILL.md`
-- `skills/engineer-agent/SKILL.md`
+- `skills/*/SKILL.md` for role-specific agent behavior
+- `src/orchestrator/workflow-engine.js` (state machine)
+- `src/adapters/notion/notion-queue.js` (Notion queue abstraction with claim and self-healing recovery)
+- `src/workers/engineer-worker.js` (ticket consumer with retry/backoff)
+- `src/libs/observability/*` (structured logging + metrics registry)
+- `src/libs/reliability/*` (retry + lease utility)
+- `tests/unit/*` and `tests/e2e/*`
+- `.github/workflows/ci.yml` and `.github/workflows/deploy.yml`
 
-Suggested first test prompt in Codex:
-`Use the product-agent skill. Create a PRD for Tasktify and save it to Notion.`
+## Prerequisites
 
-Next steps:
-1. Connect your Notion MCP or Notion connector.
-2. Start with Product Agent only.
-3. After PRD flow works, add Design Agent with Figma MCP.
-4. Then add Tech Lead Agent for technical docs.
-5. Add Engineer Agent to consume `Ready` tickets from Notion and implement with reliability + tests.
+1. Node.js 20+
+2. Codex CLI installed
+3. Notion MCP connected in Codex:
+   - `codex mcp add notion -- npx -y mcp-remote https://mcp.notion.com/mcp`
+   - `codex mcp login notion`
+4. Target Notion workspace/page prepared (example: Tasktify)
+
+## Quickstart
+
+```bash
+npm test
+cp .env.example .env
+npm run start
+```
+
+Service endpoints:
+- `GET /health`
+- `GET /ready`
+- `GET /metrics` (Prometheus-style plaintext)
+
+## AI Workflow (Target)
+
+1. Product Agent writes PRD in Notion.
+2. Design Agent writes design output from approved PRD.
+3. Tech Lead Agent writes implementation-ready tech doc (HLD, impacted services, module details, sequence diagrams).
+4. Planner Agent creates engineering tickets in Notion/Jira from approved PRD + tech doc.
+5. Engineer Agent consumes `Ready` tickets and moves:
+   - `Ready -> In Progress -> Review -> Done`
+   - failed recoverable execution: retry/requeue
+   - exhausted retry: `Failed`
+
+## Ticket Contract (Required)
+
+Every engineering ticket must be implementation-ready before status `Ready`.
+
+Required fields:
+- Title
+- Description
+- Component
+- Priority
+- Target Repository (repo URL + base branch)
+- Inputs and Context (PRD/Design/TechDoc links, constraints, references)
+- Acceptance Criteria (clear pass/fail points)
+- Expected Output (exact behavior or deliverable)
+- Test Plan (unit/e2e scope and evidence format)
+- Dependencies or Notes
+
+If one or more required fields are missing, Engineer Agent should set ticket status to `Blocked` and request clarification from Planner Agent.
+
+## Reliability Model
+
+- Retry/backoff on execution path (`runWithRetry`)
+- Lease-based ticket claim to avoid duplicate workers
+- Self-healing for expired lease (`recoverExpiredTickets`)
+- Structured logs for every transition and ticket action
+- Metrics counters/histograms exported at `/metrics`
+
+## Operational Runbook
+
+Start locally:
+```bash
+npm run start
+```
+
+Run demo flow once:
+```bash
+npm run start:demo
+```
+
+Run tests:
+```bash
+npm test
+```
+
+## Deployment
+
+### Docker
+
+```bash
+docker compose up -d --build
+```
+
+`docker-compose.yml` includes:
+- `restart: unless-stopped`
+- HTTP healthcheck against `/health`
+
+### GitHub Actions
+
+- `CI` workflow runs tests and Docker build on PR/push.
+- `Deploy` workflow runs on main/workflow_dispatch.
+  - If `DEPLOY_*` secrets are set, it deploys via SSH and restarts `docker compose`.
+  - If secrets are missing, deploy step is skipped safely.
+
+Required deploy secrets:
+- `DEPLOY_HOST`
+- `DEPLOY_USER`
+- `DEPLOY_SSH_KEY`
+- `DEPLOY_APP_PATH`
+
+## What is still scaffolded
+
+- Notion queue adapter is in-memory for now.
+- GitHub PR creation and repository-specific execution are placeholder outputs.
+- Next implementation step is replacing in-memory queue with real Notion API calls and persistent state storage.
