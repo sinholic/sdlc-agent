@@ -7,6 +7,7 @@ Included:
 - `skills/product-agent/SKILL.md`
 - `skills/design-agent/SKILL.md`
 - `skills/techlead-agent/SKILL.md`
+- `skills/engineer-agent/SKILL.md`
 
 Suggested first test prompt in Codex:
 `Use the product-agent skill. Create a PRD for Tasktify and save it to Notion.`
@@ -16,3 +17,4 @@ Next steps:
 2. Start with Product Agent only.
 3. After PRD flow works, add Design Agent with Figma MCP.
 4. Then add Tech Lead Agent for technical docs.
+5. Add Engineer Agent to consume `Ready` tickets from Notion and implement with reliability + tests.
