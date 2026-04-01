@@ -1,46 +1,108 @@
-# Tasktify Codex SDLC Starter
+# SDLC Agent Runtime
 
-This zip contains a simple Codex-oriented workspace starter for an AI-assisted SDLC flow.
+Codex-oriented SDLC workspace with:
+- role skills (`product`, `design`, `techlead`, `planner`, `engineer`)
+- runtime scaffold for orchestration and worker execution
+- baseline reliability, observability, and test coverage
+- CI and deployment workflow templates
 
-Included:
+## Included
+
 - `AGENTS.md` for global workspace rules
-- `skills/product-agent/SKILL.md`
-- `skills/design-agent/SKILL.md`
-- `skills/techlead-agent/SKILL.md`
-- `skills/engineer-agent/SKILL.md`
-
-Suggested first test prompt in Codex:
-`Use the product-agent skill. Create a PRD for Tasktify and save it to Notion.`
-
-Next steps:
-1. Connect your Notion MCP or Notion connector.
-2. Start with Product Agent only.
-3. After PRD flow works, add Design Agent with Figma MCP.
-4. Then add Tech Lead Agent for technical docs.
-5. Add Engineer Agent to consume `Ready` tickets from Notion and implement with reliability + tests.
-
-## Runtime Scaffold (v1)
-
-This repository now includes a runnable runtime scaffold for production-style orchestration:
+- `skills/*/SKILL.md` for role-specific agent behavior
 - `src/orchestrator/workflow-engine.js` (state machine)
-- `src/adapters/notion/notion-queue.js` (queue adapter with claim and self-healing recovery)
+- `src/adapters/notion/notion-queue.js` (Notion queue abstraction with claim and self-healing recovery)
 - `src/workers/engineer-worker.js` (ticket consumer with retry/backoff)
 - `src/libs/observability/*` (structured logging + metrics registry)
 - `src/libs/reliability/*` (retry + lease utility)
+- `tests/unit/*` and `tests/e2e/*`
+- `.github/workflows/ci.yml` and `.github/workflows/deploy.yml`
 
-### Run Demo
+## Prerequisites
+
+1. Node.js 20+
+2. Codex CLI installed
+3. Notion MCP connected in Codex:
+   - `codex mcp add notion -- npx -y mcp-remote https://mcp.notion.com/mcp`
+   - `codex mcp login notion`
+4. Target Notion workspace/page prepared (example: Tasktify)
+
+## Quickstart
 
 ```bash
 npm test
+cp .env.example .env
 npm run start
 ```
 
-### Test Coverage Scope
+Service endpoints:
+- `GET /health`
+- `GET /ready`
+- `GET /metrics` (Prometheus-style plaintext)
 
-- Unit tests:
-  - workflow transitions
-  - retry policy
-  - engineer worker success/failure path
-- E2E tests:
-  - full SDLC stage progress + one ticket execution
-  - self-healing requeue for expired in-progress lease
+## AI Workflow (Target)
+
+1. Product Agent writes PRD in Notion.
+2. Design Agent writes design output from approved PRD.
+3. Tech Lead Agent writes tech doc and ticket breakdown.
+4. Planner/Tech Lead creates engineering tickets in Notion backlog.
+5. Engineer Agent consumes `Ready` tickets and moves:
+   - `Ready -> In Progress -> Review -> Done`
+   - failed recoverable execution: retry/requeue
+   - exhausted retry: `Failed`
+
+## Reliability Model
+
+- Retry/backoff on execution path (`runWithRetry`)
+- Lease-based ticket claim to avoid duplicate workers
+- Self-healing for expired lease (`recoverExpiredTickets`)
+- Structured logs for every transition and ticket action
+- Metrics counters/histograms exported at `/metrics`
+
+## Operational Runbook
+
+Start locally:
+```bash
+npm run start
+```
+
+Run demo flow once:
+```bash
+npm run start:demo
+```
+
+Run tests:
+```bash
+npm test
+```
+
+## Deployment
+
+### Docker
+
+```bash
+docker compose up -d --build
+```
+
+`docker-compose.yml` includes:
+- `restart: unless-stopped`
+- HTTP healthcheck against `/health`
+
+### GitHub Actions
+
+- `CI` workflow runs tests and Docker build on PR/push.
+- `Deploy` workflow runs on main/workflow_dispatch.
+  - If `DEPLOY_*` secrets are set, it deploys via SSH and restarts `docker compose`.
+  - If secrets are missing, deploy step is skipped safely.
+
+Required deploy secrets:
+- `DEPLOY_HOST`
+- `DEPLOY_USER`
+- `DEPLOY_SSH_KEY`
+- `DEPLOY_APP_PATH`
+
+## What is still scaffolded
+
+- Notion queue adapter is in-memory for now.
+- GitHub PR creation and repository-specific execution are placeholder outputs.
+- Next implementation step is replacing in-memory queue with real Notion API calls and persistent state storage.
