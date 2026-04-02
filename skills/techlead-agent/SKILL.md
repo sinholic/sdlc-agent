@@ -37,6 +37,15 @@ Required supporting docs:
 - Env and Secret Matrix
   - environment variables by service and environment
   - secret source/ownership/rotation and required values for local + deploy
+
+Sequence diagram visualization requirements:
+- provide visual sequence diagrams for both:
+  - primary flow
+  - failure flow
+- each sequence diagram section must include:
+  - embedded diagram image in Notion (rendered visual, not text-only)
+  - editable source link (FigJam/Figma preferred; fallback: Mermaid source link)
+- keep node names consistent with Impacted Services Matrix and System Catalog
 HLD requirements:
 - identify all impacted services and ownership
 - explain service-to-service interactions
@@ -60,6 +69,7 @@ Rules:
 - only continue from approved artifacts
 - do not generate implementation tickets (that is planner-agent scope)
 - ensure all three supporting docs are linked from the main tech doc
+- do not leave sequence diagrams as text-only blocks when visual embedding is possible
 
 Suggested output:
 - a concise technical summary
