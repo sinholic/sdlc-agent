@@ -51,6 +51,17 @@ Service endpoints:
    - failed recoverable execution: retry/requeue
    - exhausted retry: `Failed`
 
+## Default Tech Stack Policy
+
+For Tasktify implementation planning and execution, use this default stack unless explicitly approved otherwise:
+- Backend services: NestJS
+- Frontend app: Next.js
+- Database: PostgreSQL
+- Cache/queue/locking (optional): Redis
+- JS package manager: Yarn
+
+Planner and Tech Lead artifacts must include this baseline in ticket/docs context.
+
 ## Ticket Contract (Required)
 
 Every engineering ticket must be implementation-ready before status `Ready`.
