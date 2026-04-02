@@ -57,6 +57,20 @@ Ticket lifecycle:
 - recoverable failure: retry once, then return to `Ready`
 - unrecoverable or missing access/context: `Blocked` with explicit reason
 
+Required evidence comment templates:
+- when setting incident ticket to `Review`, use:
+  - `Evidence Template v1`
+  - `- Stage: Review`
+  - `- Repository: <repo url>`
+  - `- Base branch: <branch>`
+  - `- PR(s): <pr url list>`
+  - `- Root cause: <short root cause summary>`
+  - `- Test evidence: <unit/integration/e2e summary>`
+  - `- Rollout note: <rollout plan>`
+  - `- Rollback note: <rollback plan>`
+  - `- Done gate: move to Done only after explicit reviewer acceptance confirmation.`
+- when setting incident ticket to `Done`, include merged PR URL and merge commit reference in the same template.
+
 Output format:
 - concise root cause summary
 - fix summary and impacted modules

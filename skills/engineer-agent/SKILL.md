@@ -84,6 +84,27 @@ Rules:
 - move a ticket to `Done` only after merge is confirmed and the final handoff comment includes the merged PR URL or merge commit reference
 - include links and summaries, not raw long logs
 
+Required evidence comment templates:
+- when setting ticket to `Review`, use this comment format:
+  - `Evidence Template v1`
+  - `- Stage: Review`
+  - `- Repository: <repo url>`
+  - `- Base branch: <branch>`
+  - `- PR(s): <pr url list>`
+  - `- Test evidence: <unit/e2e/build summary>`
+  - `- Scope summary: <implemented scope>`
+  - `- Done gate: move to Done only after explicit reviewer acceptance confirmation.`
+- when setting ticket to `Done`, use this comment format:
+  - `Evidence Template v1`
+  - `- Stage: Done`
+  - `- Repository: <repo url>`
+  - `- Base branch: <branch>`
+  - `- PR(s): <pr url list>`
+  - `- Merge commit(s): <commit sha list>`
+  - `- Test evidence: <unit/e2e/build summary>`
+  - `- Scope summary: <implemented scope>`
+  - `- Completion note: merged and verified, ticket can remain Done.`
+
 Suggested output:
 - concise implementation summary
 - changed files/modules
