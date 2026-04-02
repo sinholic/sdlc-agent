@@ -24,6 +24,10 @@ Required implementation standards:
   - database: PostgreSQL
   - Redis only when needed for cache/queue/locks/rate-limit
   - JavaScript package manager: Yarn
+- for any 3rd-party API call, use provider-layer pattern:
+  - place integrations in `src/providers/<vendor-client>/`
+  - define contract interface + implementation + provider token/module export
+  - inject provider into domain module/service, never direct instantiate in controller/service business flow
 
 Ticket lifecycle:
 - `Ready` -> `In Progress` -> `Review` -> `Done`
@@ -49,6 +53,7 @@ Rules:
   - dependencies or notes
 - if ticket detail is incomplete, set status to `Blocked` and request planner clarification in ticket comment
 - if ticket stack/framework conflicts with baseline and no exception note exists, set status to `Blocked` and request tech lead clarification
+- if ticket asks direct external API call from domain layer (without provider abstraction), set status to `Blocked` and request provider-layer refactor acceptance first
 - never mark `Done` without test evidence
 - include links and summaries, not raw long logs
 
