@@ -34,6 +34,7 @@ Required technical doc structure:
 - Open Questions and Assumptions
 - Delivery and Rollout Plan
 - Tech Stack Baseline and Rationale
+- Provider and Integration Architecture
 
 Required supporting docs:
 - System Catalog
@@ -51,6 +52,15 @@ Required supporting docs:
 - Stack Baseline note
   - explicitly state NestJS + Next.js + PostgreSQL + optional Redis as implementation default
   - any deviation must be called out with reason, scope, and owner approval
+
+Provider architecture requirements:
+- all 3rd-party integrations must be designed under a dedicated provider layer (for example `src/providers/<vendor-client>`)
+- each provider must define:
+  - abstraction/contract interface (for testability and substitution)
+  - implementation class for vendor calls
+  - provider token/constants and dedicated module export
+- domain modules (auth/task/etc) must consume provider contracts via DI and module import, not instantiate vendor SDK/client directly
+- every ticket touching external APIs must state impacted provider module and expected contract changes
 
 Sequence diagram placement requirements:
 - keep HLD sequence section concise and high-level (cross-service summary only)
