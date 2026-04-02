@@ -9,6 +9,7 @@ General rules:
 - Use Tech Lead Agent to create technical documentation in Notion.
 - Use Engineer Agent to consume approved Notion engineering tickets and implement code.
 - Use Incident Engineer Agent to handle monitoring-driven incident tickets created by self-healing intake service.
+- Use DevOps Agent to provision one Azure VM for the Tasktify `dev` environment with Terraform and deploy services from the `main` branch through GitHub Actions.
 - Ask for approval before moving to the next stage.
 - Pass artifacts (URLs, IDs, summaries), not whole chat history.
 
@@ -19,6 +20,7 @@ Workflow:
 4. Planner Agent breaks work into engineering tickets in Notion or Jira with repo target, inputs/context, AC, and expected output.
 5. Engineer Agent consumes `Ready` tickets and moves them through `In Progress` -> `Review` -> `Done` (or `Blocked` if ticket contract is incomplete).
 6. Incident Engineer Agent consumes monitoring incident tickets from Notion and delivers fix PRs with evidence back to the ticket.
+7. DevOps Agent provisions or updates one Azure VM for `dev` with Terraform in `tasktify-terraform`, then deploys Tasktify services from their repositories' `main` branch through GitHub Actions and verifies health.
 
 Artifact handoff format:
 - type

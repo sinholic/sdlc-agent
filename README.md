@@ -1,7 +1,7 @@
 # SDLC Agent Runtime
 
 Codex-oriented SDLC workspace with:
-- role skills (`product`, `design`, `techlead`, `planner`, `engineer`, `incident-engineer`)
+- role skills (`product`, `design`, `techlead`, `planner`, `engineer`, `incident-engineer`, `devops`)
 - runtime scaffold for orchestration and worker execution
 - baseline reliability, observability, and test coverage
 - CI and deployment workflow templates
@@ -50,6 +50,7 @@ Service endpoints:
    - `Ready -> In Progress -> Review -> Done`
    - failed recoverable execution: retry/requeue
    - exhausted retry: `Failed`
+6. DevOps Agent provisions one Azure `dev` VM in `tasktify-terraform`, manages ACR-backed deployment assumptions, and deploys app/services from `main` via GitHub Actions.
 
 ## Default Tech Stack Policy
 
